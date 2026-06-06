@@ -4,8 +4,38 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Book extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'author',
+        'publication_date',
+        'is_available',
+        'user_id',
+    ];
+
+    protected $casts = [
+        'publication_date' => 'date',
+        'is_avaliable' => 'boolean',
+    ];
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'book_category');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function isAvaliable(): bool
+    {
+        return $this->is_avaliable;
+    }
 }
