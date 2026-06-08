@@ -23,6 +23,7 @@ Route::get('/', function () {
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::post('/books', [BookController::class, 'store'])->name('books.store');
 Route::post('/books/{book}/toggle', [BookController::class, 'toggleStatus'])->name('books.toggle');
+Route::post('/books/{book}/waiting-list', [BookController::class, 'joinWaitingList'])->name('books.waitingList');
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::post('/users', [UserController::class, 'store'])->name('users.store');

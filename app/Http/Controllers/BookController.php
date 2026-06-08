@@ -58,16 +58,40 @@ class BookController extends Controller
         }
         else
         {
+            $nextUserInLine = $book->waitingList()->first();
+
             $book->update([
                 'is_available' => true,
                 'user_id' => null,
             ]);
 
-            // Obtener un usuario en lista de espera  para enviar el mensaje
-            $message = "Hola Nombre, el libro '{$book->name}' que tenías prestado ya está registrado como disponible nuevamente.";
-            $this->messageSender->send('Numero', $message);
+            if ($nextUserInLine)
+            {
+                $message = "¡Buenas noticias, {$nextUserInLine->name}! El libro '{$book->name}' que estabas esperando ya se encuentra disponible para renta.";
+                $this->messageSender->send($nextUserInLine->email, $message);
+                $book->waitingList()->detach($nextUserInLine->id);    
+            }
         }
 
         return redirect()->back()->with('success', 'Estatus del libro actualizado con éxito.');
+    }
+
+    public function joinWaitingList(Request $request, Book $book)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        if ($book->waitingList()->where('user_id', $request->user_id)->exists()){
+            return redirect()->back()->withErrors(['waiting_list' => 'Este usuario ya está en la lista de espera para este libro.']);
+        }
+
+        if ($book->user_id == $request->user_id) {
+            return redirect()->back()->withError(['waiting_list' => 'El usuario actual con el préstamo no puede anotarse en la lista de espera.']);
+        }
+
+        $book->waitingList()->attach($request->user_id);
+
+        return redirect()->back()->with('success', 'Usuario añadido a la lista de espera con éxito.');
     }
 }

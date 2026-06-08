@@ -67,7 +67,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <form action="{{ route('books.toggle', $book->id) }}" method="POST" class="d-flex align-items-center">
+                                    <form action="{{ route('books.toggle', $book->id) }}" method="POST" class="d-flex align-items-center mb-2">
                                         @csrf
                                         @if($book->isAvailable())
                                             <select name="user_id" class="form-select form-select-sm me-2" style="max-width: 130px;" required>
@@ -81,6 +81,23 @@
                                             <button type="submit" class="btn btn-sm btn-outline-success">Devolver</button>
                                         @endif
                                     </form>
+
+                                    @if(!$book->isAvailable())
+                                        <form action="{{ route('books.waitingList', $book->id) }}" method="POST" class="d-flex align-items-center">
+                                            @csrf
+                                            <select name="user_id" class="form-select form-select-sm me-2" style="max-width: 130px;" required>
+                                                <option value="">Esperar...</option>
+                                                @foreach($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-secondary" title="Anotar en lista de espera">⏳ Fila</button>
+                                        </form>
+                                        
+                                        @if($book->waitingList()->count() > 0)
+                                            <small class="text-muted d-block mt-1">👥 En fila: <span class="badge bg-secondary">{{ $book->waitingList()->count() }}</span></small>
+                                        @endif
+                                    @endif
                                 </td>
                             </tr>
                         @empty

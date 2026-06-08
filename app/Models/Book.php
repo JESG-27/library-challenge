@@ -38,4 +38,12 @@ class Book extends Model
     {
         return $this->is_available;
     }
+
+    public function waitingList()
+    {
+        // Agregar un limitador en la consulta
+        return $this->belongsToMany(User::class, 'book_user_waiting_list')
+            ->withTimestamps()
+            ->orderBy('book_user_waiting_list.created_at', 'asc');
+    }
 }
