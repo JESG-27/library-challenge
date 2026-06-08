@@ -72,7 +72,7 @@ class BookController extends Controller
 
         $book->categories()->attach($validated['categories']);
 
-        return redirect()->back()->with('success', 'Libro creado con éxito.');
+        return redirect()->route('books.index')->with('success', 'Libro creado con éxito.');
     }
 
     public function toggleStatus(Request $request, Book $book)
