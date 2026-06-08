@@ -1,63 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 📚 Library Management System - Code Challenge
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este es un sistema de gestión de biblioteca desarrollado en **Laravel** que permite administrar libros, categorías y usuarios. Además del CRUD estándar, el sistema implementa reglas de negocio estrictas para la validación de datos y un sistema avanzado de **préstamos de libros con lista de espera automática bajo la lógica FIFO (First In, First Out)**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠️ Tecnologías y Características Principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Framework:** Laravel 8.83.29 (PHP 7.4.32)
+- **Base de Datos:** MySQL (Entorno local con Laragon/XAMPP)
+- **Frontend:** Bootstrap 5 (UI limpia, responsiva y organizada en tablas)
+- **Pruebas Automatizadas:** PHPUnit con base de datos SQLite en memoria (`:memory:`).
+- **Arquitectura:** * Uso de *Form Requests\* dinámicos e inteligentes para desacoplar la validación de los controladores.
+    - Desacoplamiento de lógica de notificaciones mediante un servicio dedicado (`MessageSender`).
+    - Paginación nativa de 5 en 5 elementos para un rendimiento óptimo.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📋 Reglas de Negocio Implementadas
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1.  **Categorías sin Números:** El nombre de las categorías está validado mediante expresiones regulares estrictas (`regex:/^[\pL\s\-]+$/u`) para asegurar que no contenga números ni caracteres especiales inválidos.
+2.  **Validación Inteligente de Usuarios:** El sistema de edición de usuarios permite actualizar los datos manteniendo el mismo correo electrónico (evitando el error común de duplicidad de Laravel), pero bloquea la acción si se intenta usar el email de otro usuario existente.
+3.  **Sistema FIFO de Lista de Espera:** \* Si un libro está **Disponible**, cualquier usuario registrado puede tomarlo prestado.
+    - Si un libro está **Prestado**, se habilita una sección para hacer fila en la **Lista de Espera**.
+    - Cuando el libro es **Devuelto**, el sistema identifica automáticamente quién fue el **primer usuario en anotarse** (First In, First Out), lo remueve de la lista de espera, libera el libro y simula el envío de una notificación (guardando un registro detallado en `storage/logs/laravel.log`).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Instrucciones de Despliegue Local
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Sigue estos sencillos pasos para clonar, configurar y ejecutar el proyecto en tu entorno local (Laragon, XAMPP, etc.):
 
-### Premium Partners
+### 1. Clonar el repositorio e instalar dependencias
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Abre tu terminal en tu carpeta de servidores locales (`C:\laragon\www\` o equivalente) y ejecuta:
 
-## Contributing
+```bash
+git clone <URL_DE_ESTE_REPOSITORIO> library-challenge
+cd library-challenge
+composer install
+npm install && npm run dev
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Configurar el archivo de entorno
 
-## Code of Conduct
+Copia el archivo de ejemplo .env.example y renómbralo a .env:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Abre el archivo .env recién creado y configura tus credenciales de base de datos local:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=library_challenge
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 3. Generar la clave de la aplicación y correr migraciones
+
+Genera la llave de seguridad de Laravel y ejecuta las migraciones junto con los seeders para tener datos de prueba de inmediato (usuarios, libros y categorías pre-cargados):
+
+```bash
+php artisan key:generate
+php artisan migrate --seed
+```
+
+### 4. Levantar el servidor local
+
+Si estás usando Laragon, el proyecto se creará automáticamente en un dominio local como http://library-challenge.test. Si prefieres usar el servidor embebido de Laravel, ejecuta:
+
+```bash
+php artisan serve
+```
+
+### La aplicación estará disponible en: http://127.0.0.1:8000
+
+Ejecución de la Suite de Pruebas (Testing)
+El proyecto cuenta con 11 pruebas automatizadas de integración y unitarias que cubren el 100% de los flujos críticos (creación, edición con exclusión de IDs, restricciones de regex en categorías, el flujo de colas FIFO y las relaciones Muchos a Muchos).
+
+Para garantizar la velocidad y no alterar tu base de datos de desarrollo, las pruebas se ejecutan automáticamente sobre SQLite en memoria.
+
+Para correr las pruebas, ejecuta en tu consola:
+
+```bash
+php artisan test
+```
+
+Deberías ver una salida limpia con todas las aserciones en verde (PASS):
+
+- BookCrudTest: Registro, sincronización de categorías vía tabla pivote (sync) y eliminación.
+- BookWaitingListTest: Validación del flujo FIFO de la lista de espera e inyección de logs.
+- CategoryTest: Validación de creación sin números, actualización y borrado.
+- UserValidationTest: Alta de usuarios, encriptación de contraseñas mediante bcrypt y validación de correos únicos.
+
+## Verificación de Logs (Flujo FIFO)
+
+Para comprobar el correcto funcionamiento del servicio de notificaciones simulado al liberar un libro en la fila de espera, puedes revisar el archivo de logs tras hacer una devolución:
+
+```bash
+tail -f storage/logs/laravel.log
+```
+
+Verás un registro estructurado como este:
+
+```bash
+[2026-06-08 18:56:11] local.INFO: ===============================
+[2026-06-08 18:56:11] local.INFO: Enviando mensaje a: wiza.triston@example.org
+[2026-06-08 18:56:11] local.INFO: Mensaje: ¡Buenas noticias, Alf Kihn III act! El libro 'Omnis sapiente blanditiis.' que estabas esperando ya se encuentra disponible para renta.
+[2026-06-08 18:56:11] local.INFO: ===============================
+```
 
 ## License
 
