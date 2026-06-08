@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    protected $messageSender;
+    protected MessageSender $messageSender;
     public function __construct(MessageSender $messageSender) 
     {
         $this->messageSender = $messageSender;
@@ -49,7 +49,7 @@ class BookController extends Controller
 
         if ($oldAvailableStatus)
         {
-            $request->validate(['user_id' => 'required|exists:user_id']);
+            $request->validate(['user_id' => 'required|exists:users,id']);
 
             $book->update([
                 'is_available'=>false,
@@ -68,6 +68,6 @@ class BookController extends Controller
             $this->messageSender->send('Numero', $message);
         }
 
-        return redirect()->back()->with('succes', 'Estatus del libro actualizado con éxito.');
+        return redirect()->back()->with('success', 'Estatus del libro actualizado con éxito.');
     }
 }

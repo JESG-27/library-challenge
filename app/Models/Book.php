@@ -21,7 +21,7 @@ class Book extends Model
 
     protected $casts = [
         'publication_date' => 'date',
-        'is_avaliable' => 'boolean',
+        'is_available' => 'boolean',
     ];
 
     public function categories(): BelongsToMany
@@ -34,8 +34,8 @@ class Book extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function isAvaliable(): bool
+    public function isAvailable(): bool
     {
-        return $this->is_avaliable;
+        return $this->is_available;
     }
 }
