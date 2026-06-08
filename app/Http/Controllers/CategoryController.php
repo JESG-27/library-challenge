@@ -18,4 +18,27 @@ class CategoryController extends Controller
         Category::create($request->validated());
         return redirect()->back()->with('success', 'Categoría creada con éxito.');
     }
+
+    public function create()
+    {
+        return view('categories.create_edit');
+    }
+
+    public function edit(Category $category)
+    {
+        return view('categories.create_edit', compact('category'));
+    }
+
+    public function update(StoreCategoryRequest $request, Category $category)
+{
+    $validated = $request->validated();
+    $category->update($validated);
+    return redirect()->route('categories.index')->with('success', 'Categoría actualizada con éxito.');
+}
+
+    public function destroy(Category $category)
+    {
+        $category->delete();
+        return redirect()->route('categories.index')->with('success', 'Categoría eliminada con éxito.');
+    }
 }

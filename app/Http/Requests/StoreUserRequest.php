@@ -23,10 +23,12 @@ class StoreUserRequest extends FormRequest
      */
     public function rules()
     {
+        $userId = $this->route('user') ? $this->route('user')->id : null;
+
         return [
             'name' => ['required', 'string', 'regex:/^[\pL\s\-]+$/u'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:6'],
+            'email' => 'required|email|unique:users,email,' . ($userId ?? 'NULL'),
+            'password' => $userId ? 'nullable|string|min:6' : 'required|string|min:6',
         ];
     }
 

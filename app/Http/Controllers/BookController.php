@@ -26,7 +26,39 @@ class BookController extends Controller
         return view('books.index', compact('books', 'users', 'categories'));
     }
 
-    // Create
+    public function create()
+    {
+        $categories = Category::all();
+        return view('books.create_edit', compact('categories'));
+    }
+
+    public function edit(Book $book)
+    {
+        $categories = Category::all();
+        return view('books.create_edit', compact('book', 'categories'));
+    }
+
+    public function update(StoreBookRequest $request, Book $book)
+    {
+        $validated = $request->validated();
+
+        $book->update([
+            'name' => $validated['name'],
+            'author' => $validated['author'],
+            'publication_date' => $validated['publication_date'],
+        ]);
+
+        $book->categories()->sync($validated['categories']);
+
+        return redirect()->route('books.index')->with('success', 'Libro actualizado con éxito.');
+    }
+
+    public function destroy(Book $book)
+    {
+        $book->delete();
+        return redirect()->route('books.index')->with('success', 'Libro eliminado con éxito.');
+    }
+
     public function store(StoreBookRequest $request)
     {
         $validated = $request->validated();

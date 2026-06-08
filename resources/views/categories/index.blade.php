@@ -1,52 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">Nueva Categoría</div>
-            <div class="card-body">
-                <form action="{{ route('categories.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label">Nombre de Categoría</label>
-                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <textarea name="description" class="form-control" rows="3" required>{{ old('description') }}</textarea>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Crear Categoría</button>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🗂️ Catálogo de Categorías</h2>
+    <a href="{{ route('categories.create') }}" class="btn btn-success">➕ Nueva Categoría</a>
+</div>
 
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">Categorías Disponibles</div>
-            <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($categories as $category)
-                            <tr>
-                                <td><strong>{{ $category->name }}</strong></td>
-                                <td>{{ $category->description }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer bg-white pt-3">
-                {{ $categories->links() }}
-            </div>
-        </div>
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 30%;">Nombre</th>
+                    <th style="width: 55%;">Descripción</th>
+                    <th style="width: 15%;" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($categories as $category)
+                    <tr>
+                        <td><strong>{{ $category->name }}</strong></td>
+                        <td>{{ \Illuminate\Support\Str::limit($category->description, 100) }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-outline-primary">✏️ Editar</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center p-4 text-muted">No hay categorías registradas.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="card-footer bg-white pt-3 px-4">
+        {{ $categories->links() }}
     </div>
 </div>
 @endsection

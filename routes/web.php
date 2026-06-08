@@ -20,13 +20,9 @@ Route::get('/', function () {
     return redirect()->route('books.index');
 });
 
-Route::get('/books', [BookController::class, 'index'])->name('books.index');
-Route::post('/books', [BookController::class, 'store'])->name('books.store');
+Route::resource('books', BookController::class)->except(['show']);
+Route::resource('categories', CategoryController::class)->except(['show']);
+Route::resource('users', UserController::class)->except(['show']);
+
 Route::post('/books/{book}/toggle', [BookController::class, 'toggleStatus'])->name('books.toggle');
 Route::post('/books/{book}/waiting-list', [BookController::class, 'joinWaitingList'])->name('books.waitingList');
-
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
-
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
